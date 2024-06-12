@@ -4,6 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
 import { TeachersModule } from './teachers/teachers.module';
 import { CommonModule } from './common/common.module';
+import { CourseModule } from './course/course/course.module';
+import { QuizModule } from './course/quiz/quiz.module';
+import { QuestionModule } from './course/question/question.module';
+import { AnswerModule } from './course/answer/answer.module';
 
 @Module({
   imports: [
@@ -21,6 +25,10 @@ import { CommonModule } from './common/common.module';
     AuthModule,
     TeachersModule,
     CommonModule,
+    CourseModule,
+    QuizModule,
+    QuestionModule,
+    AnswerModule,
   ],
   controllers: [],
   providers: [],
