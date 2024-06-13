@@ -18,13 +18,13 @@ export class Quiz {
     })
     isActive: boolean;
 
-    @ManyToOne(() => Course, course => course.quizzes )
+    @ManyToOne(() => Course, course => course.quizzes, {onDelete: 'CASCADE'})
     course: Course
 
     @ManyToOne(() => QuizType, quizType => quizType.quizzes)
     quizType: QuizType;
 
-    @OneToMany(() => Question, question => question.quiz, {cascade: true})
+    @OneToMany(() => Question, question => question.quiz, {onDelete: 'CASCADE'})
     questions: Question[];
 
 }

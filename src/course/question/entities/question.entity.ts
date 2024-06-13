@@ -12,7 +12,7 @@ export class Question {
     })
     text: string;
 
-    @ManyToOne(() => Quiz, quiz => quiz.questions)
+    @ManyToOne(() => Quiz, quiz => quiz.questions, {onDelete: 'CASCADE'})
     quiz: Quiz
 
 }

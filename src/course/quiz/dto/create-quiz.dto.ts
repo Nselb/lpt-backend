@@ -1,6 +1,5 @@
 import { Type } from "class-transformer";
 import { IsArray, IsString, IsUUID, MinLength, ValidateNested } from "class-validator";
-import { CreateQuestionDto } from "src/course/question/dto/create-question.dto";
 
 export class CreateQuizDto {
 
@@ -17,7 +16,6 @@ export class CreateQuizDto {
     quizTypeId: string;
 
     @IsArray()
-    @ValidateNested({each: true})
-    @Type(() => CreateQuestionDto)
-    questions: CreateQuestionDto[]
+    @Type(() => String)
+    questions: string[]
 }

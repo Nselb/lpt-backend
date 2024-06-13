@@ -34,7 +34,7 @@ export class CourseService {
 
       await this.courseRepository.save(course);
 
-      return course;
+      return await this.courseRepository.findOne({ where: {name}, relations: ['teacher', 'quizzes'] });;
 
     } catch (error) {
       this.commonService.handleDBErrors(error)
@@ -42,15 +42,15 @@ export class CourseService {
   }
 
   async findAll() {
-    return await this.courseRepository.find({});
+    return await this.courseRepository.find({relations: ['teacher', 'quizzes']});
   }
 
   async findOne(term: string) {
 
     let course: Course;
-    course = await this.courseRepository.findOneBy({ id: term });
+    course = await this.courseRepository.findOne({ where: {id: term}, relations: ['teacher', 'quizzes'] });
     if(!course){
-      course = await this.courseRepository.findOneBy({ name: term });
+      course = await this.courseRepository.findOne({ where: {name: term}, relations: ['teacher', 'quizzes']});
     }
 
     if(!course) throw new NotFoundException(`Course with term ${term} not found`);

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateQuizDto, UpdateQuizDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Quiz, QuizType } from './entities';
@@ -25,15 +25,24 @@ export class QuizService {
   async create(createQuizDto: CreateQuizDto) {
     const { name, courseId, quizTypeId, questions } = createQuizDto;
 
-    return this.dataSource.transaction(async (manager) => {
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+    try {
       const course = await this.courseService.findOne(courseId);
 
       if (!course)
-        throw new NotFoundException(`Teacher with id ${courseId} not found`);
+        throw new NotFoundException(`Course with id ${courseId} not found`);
 
       const quizType = await this.quizTypeRepository.findOneBy({
         id: quizTypeId,
       });
+
+      const existingQuiz = await this.quizRepository.findOne({
+        where: {name, course}
+      })
+
+      if(existingQuiz) throw new BadRequestException(`Quiz with name ${name} already exists on course with ID ${courseId}`)
 
       if (!quizTypeId)
         throw new NotFoundException(
@@ -41,36 +50,38 @@ export class QuizService {
         );
 
       let quiz = this.quizRepository.create({
-        ...createQuizDto,
+        name: name,
       });
       quiz.course = course;
       quiz.quizType = quizType;
 
-      await manager.save(quiz);
+      await queryRunner.manager.save(quiz);
       
-      for (const questionDto of questions) {
-        const existingQuestion = await this.questionRepository.findOne({
-          where: { text: questionDto.text, quiz: { id: quiz.id } },
-        });
-
-        if (!existingQuestion) {
+      for (const question of questions) {
+        
           const newQuestion = this.questionRepository.create({
-            text: questionDto.text,
+            text: question,
             quiz,
           });
-          await manager.save(newQuestion);
-        }
+          await queryRunner.manager.save(newQuestion);
+        
       }
+      await queryRunner.commitTransaction();
 
-      return this.quizRepository.findOne({
+      return await this.quizRepository.findOne({
         where: { id: quiz.id },
-        relations: ['questions'],
+        relations: ['questions', 'course'],
       });
-    });
+    } catch (error) {
+      await queryRunner.rollbackTransaction()
+      this.commonService.handleDBErrors(error)
+    } finally {
+      await queryRunner.release()
+    }
   }
 
   async findAll() {
-    return await this.quizRepository.find({ relations: ['questions'] });
+    return await this.quizRepository.find({ relations: ['questions', 'course'] });
   }
 
   async findOne(term: string) {
@@ -84,7 +95,7 @@ export class QuizService {
 
     return this.quizRepository.findOne({
       where: { id: quiz.id },
-      relations: ['questions'],
+      relations: ['questions', 'course'],
     });
   }
 
@@ -93,7 +104,11 @@ export class QuizService {
     let quiz = await this.quizRepository.findOneBy({ id });
 
     if (!quiz) throw new NotFoundException(`Quiz With id ${id} not found`);
-    return this.dataSource.transaction(async (manager) => {
+
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.connect()
+    await queryRunner.startTransaction()
+    try {
       if (name) {
         quiz.name = name;
       }
@@ -101,6 +116,12 @@ export class QuizService {
       if (courseId) {
         const course = await this.courseService.findOne(courseId);
         quiz.course = course;
+        const existingQuiz = await this.quizRepository.findOne({
+          where: {name, course}
+        })
+  
+        if(existingQuiz) throw new BadRequestException(`Quiz with name ${name} already exists on course with ID ${courseId}`)
+
       }
       if (quizTypeId) {
         const quizType = await this.quizTypeRepository.findOneBy({
@@ -108,27 +129,30 @@ export class QuizService {
         });
         quiz.quizType = quizType;
       }
-      await manager.save(quiz)
+      await queryRunner.manager.save(quiz)
       if (questions.length != 0) {
+        await queryRunner.manager.delete(Question, {quiz:{id: quiz.id}})
         for (const question of questions) {
-          const existingQuestion = await this.questionRepository.findOne({
-            where: { text: question.text, quiz: { id: quiz.id } },
+
+          const newQuestion = this.questionRepository.create({
+            text: question,
+            quiz,
           });
-          if (!existingQuestion) {
-            const newQuestion = this.questionRepository.create({
-              text: question.text,
-              quiz,
-            });
-            await manager.save(newQuestion);
-          }
+          await queryRunner.manager.save(newQuestion);
+          
         }
       }
+      await queryRunner.commitTransaction()
       return this.quizRepository.findOne({
         where: { id: quiz.id },
-        relations: ['questions'],
+        relations: ['questions', 'course'],
       });
-      
-    });
+    } catch (error) {
+      await queryRunner.rollbackTransaction()
+      this.commonService.handleDBErrors(error)
+    } finally {
+      await queryRunner.release()
+    }
   }
 
   async remove(id: string) {

@@ -4,11 +4,15 @@ import { BadRequestException, Injectable, InternalServerErrorException } from '@
 export class CommonService {
 
     handleDBErrors(err: any){
+        console.log(err)
         if (err.errno === 1062) {
             throw new BadRequestException(err.sqlMessage);
           }
         if(err){
-            throw new InternalServerErrorException('TODO')
+            if(err.status === 400){
+                throw new BadRequestException(err.response.message)
+            }
+            throw new InternalServerErrorException(err.response)
         }
     }
 

@@ -21,7 +21,7 @@ export class Course {
     @ManyToOne(() => Teacher, teacher => teacher.courses)
     teacher: Teacher
 
-    @OneToMany(() => Quiz, quiz => quiz.course)
+    @OneToMany(() => Quiz, quiz => quiz.course, {onDelete: 'CASCADE'} )
     quizzes: Quiz[]
 
 }
