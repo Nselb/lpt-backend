@@ -1,20 +1,17 @@
 import { Repository } from 'typeorm';
 
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { hashPassword, verifyPassword } from '../plugins/crypt';
-import { CreateStudentDto,  StudentLoginDto } from './dto';
+import { CreateStudentDto, StudentLoginDto } from './dto';
 import { Student } from './entities';
 import { JwtStudentPayload } from './dto/intrefaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { CreateTeacherDto } from 'src/teachers/dto/create-teacher.dto';
 import { Teacher } from 'src/teachers/entities/teacher.entity';
 import { CommonService } from 'src/common/common.service';
+import { TeacherLoginDto } from './dto/login/teacher-login.dto';
 
 @Injectable()
 export class AuthService {
@@ -49,7 +46,7 @@ export class AuthService {
       delete createdStudent.pin;
       return {
         ...createdStudent,
-        token: this.getStudentJwt({ id: createdStudent.id }),
+        token: this.getJwt({ id: createdStudent.id }),
       };
     } catch (error) {
       this.commonService.handleDBErrors(error);
@@ -70,14 +67,30 @@ export class AuthService {
     }
     return {
       username: student.username,
-      token: this.getStudentJwt({ id: student.id }),
+      token: this.getJwt({ id: student.id }),
     };
   }
 
-  private getStudentJwt(payload: JwtStudentPayload) {
+  async teacherLogin(teacherLoginDto: TeacherLoginDto) {
+    const { password, username } = teacherLoginDto;
+    const teacher = await this.teacherRepository.findOne({
+      where: { username },
+      select: { username: true, password: true },
+    });
+    if (!teacher) {
+      throw new UnauthorizedException('Usuario no existe');
+    }
+    if (!verifyPassword(password.toString(), teacher.password)) {
+      throw new UnauthorizedException('Contraseña inválida');
+    }
+    return {
+      username: teacher.username,
+      token: this.getJwt({ id: teacher.id }),
+    };
+  }
+
+  private getJwt(payload: JwtStudentPayload) {
     const token = this.jwtService.sign(payload);
     return token;
   }
-  private getTeacherJwt(payload: JwtStudentPayload) {}
-
 }

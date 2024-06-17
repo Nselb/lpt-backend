@@ -11,6 +11,7 @@ import {
 import { AuthService } from './auth.service';
 import { CreateStudentDto, StudentLoginDto } from './dto';
 import { CreateTeacherDto } from 'src/teachers/dto/create-teacher.dto';
+import { TeacherLoginDto } from './dto/login/teacher-login.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -26,5 +27,9 @@ export class AuthController {
   @Post('studentLogin')
   studentLogin(@Body() studentLoginDto: StudentLoginDto) {
     return this.authService.studentLogin(studentLoginDto);
+  }
+  @Post('teacherLogin')
+  teacherLogin(@Body() teacherLoginDto: TeacherLoginDto) {
+    return this.authService.teacherLogin(teacherLoginDto);
   }
 }

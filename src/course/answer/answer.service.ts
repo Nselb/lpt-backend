@@ -4,23 +4,19 @@ import { UpdateAnswerDto } from './dto/update-answer.dto';
 
 @Injectable()
 export class AnswerService {
-  create(createAnswerDto: CreateAnswerDto) {
+  async create(createAnswerDto: CreateAnswerDto) {
     return 'This action adds a new answer';
   }
 
-  findAll() {
-    return `This action returns all answer`;
+  async findAllByQuestion(questionId: string) {
+    return `This action returns a #${questionId} answer`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} answer`;
-  }
-
-  update(id: number, updateAnswerDto: UpdateAnswerDto) {
+  async update(id: string, updateAnswerDto: UpdateAnswerDto) {
     return `This action updates a #${id} answer`;
   }
 
-  remove(id: number) {
+  async remove(id: string) {
     return `This action removes a #${id} answer`;
   }
 }
