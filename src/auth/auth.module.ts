@@ -9,11 +9,12 @@ import { TeachersModule } from 'src/teachers/teachers.module';
 import { Teacher } from 'src/teachers/entities/teacher.entity';
 import { CommonModule } from 'src/common/common.module';
 import { Student } from 'src/students/student/entities/student.entity';
+import { Progress } from 'src/students/progress/entities/progress.entity';
 
 @Module({
   imports: [
     CommonModule,
-    TypeOrmModule.forFeature([Teacher]),
+    TypeOrmModule.forFeature([Teacher, Progress]),
     TypeOrmModule.forFeature([Student]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({

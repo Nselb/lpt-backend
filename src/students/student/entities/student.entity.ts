@@ -1,6 +1,7 @@
 import { Course } from "src/course/course/entities/course.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { StudentGrade } from "./student-grade.entity";
+import { Progress } from "src/students/progress/entities/progress.entity";
 
 @Entity('students')
 export class Student {
@@ -22,5 +23,7 @@ export class Student {
     course: Course
     @OneToMany(() => StudentGrade, studentGrade => studentGrade.student, {onDelete:'CASCADE'})
     studentGrades: StudentGrade[]
+    @OneToOne(() => Progress, progress => progress.student)
+    progress: Progress;
 
 }

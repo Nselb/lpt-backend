@@ -26,7 +26,7 @@ export class StudentService {
 
   async findAll(paginationDto: PaginationDto) {
     const { limit=10, offset =0 } = paginationDto;
-
+    console.log(limit)
     let students = await this.studentRepository.find({
       take: limit,
       skip: offset,
@@ -37,9 +37,9 @@ export class StudentService {
 
   async findOne(term: string) {
     let student: Student;
-    student = await this.studentRepository.findOne({ where: {id: term}, relations: ['course', 'studentGrade'] });
+    student = await this.studentRepository.findOne({ where: {id: term}, relations: ['course', 'studentGrades'] });
     if(!student){
-      student = await this.studentRepository.findOne({where: { username: term }, relations: ['course', 'studentGrade']});
+      student = await this.studentRepository.findOne({where: { username: term }, relations: ['course', 'studentGrades']});
     }
 
     if(!student) throw new NotFoundException(`Student with term ${term} not found`);
