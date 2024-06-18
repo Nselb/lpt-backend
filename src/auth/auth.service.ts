@@ -60,10 +60,10 @@ export class AuthService {
       select: { username: true, pin: true },
     });
     if (!student) {
-      throw new UnauthorizedException('Usuario no existe');
+      throw new UnauthorizedException('Usuario o contraseña inválidos');
     }
     if (!verifyPassword(pin.toString(), student.pin)) {
-      throw new UnauthorizedException('Contraseña inválida');
+      throw new UnauthorizedException('Usuario o contraseña inválidos');
     }
     return {
       username: student.username,
@@ -73,15 +73,16 @@ export class AuthService {
 
   async teacherLogin(teacherLoginDto: TeacherLoginDto) {
     const { password, username } = teacherLoginDto;
+    console.log(password, username);
     const teacher = await this.teacherRepository.findOne({
       where: { username },
       select: { username: true, password: true },
     });
     if (!teacher) {
-      throw new UnauthorizedException('Usuario no existe');
+      throw new UnauthorizedException('Usuario o contraseña inválidos');
     }
     if (!verifyPassword(password.toString(), teacher.password)) {
-      throw new UnauthorizedException('Contraseña inválida');
+      throw new UnauthorizedException('Usuario o contraseña inválidos');
     }
     return {
       username: teacher.username,
