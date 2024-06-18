@@ -9,7 +9,6 @@ import { CommonService } from '../../common/common.service';
 
 @Injectable()
 export class QuestionService {
-
   constructor(
     @InjectRepository(Question)
     private readonly questionRepository: Repository<Question>,
@@ -18,27 +17,23 @@ export class QuestionService {
   ) {}
 
   async create(createQuestionDto: CreateQuestionDto) {
-
-    const { text, quizId } =  createQuestionDto;
+    const { quizId } = createQuestionDto;
 
     const quiz = await this.quizService.findOne(quizId);
 
-    if(!quiz) throw new NotFoundException(`Quiz with id ${quiz} not found`)
-    
+    if (!quiz) throw new NotFoundException(`Quiz with id ${quiz} not found`);
 
     try {
-      
       let question = this.questionRepository.create({
-        ...createQuestionDto
-      })
-      question.quiz = quiz
+        ...createQuestionDto,
+      });
+      question.quiz = quiz;
 
       await this.questionRepository.save(quiz);
 
       return quiz;
-
     } catch (error) {
-      this.commonService.handleDBErrors(error)
+      this.commonService.handleDBErrors(error);
     }
   }
 
@@ -48,9 +43,9 @@ export class QuestionService {
 
   async findOne(id: string) {
     let question: Question;
-    question = await this.questionRepository.findOneBy({id});
+    question = await this.questionRepository.findOneBy({ id });
 
-    if(!question) throw new NotFoundException(`Quiz with id ${id} not found`);
+    if (!question) throw new NotFoundException(`Quiz with id ${id} not found`);
 
     return question;
   }
@@ -58,30 +53,31 @@ export class QuestionService {
   async update(id: string, updateQuestionDto: UpdateQuestionDto) {
     const { text, quizId } = updateQuestionDto;
 
-    let question = await this.questionRepository.findOneBy({id})
+    let question = await this.questionRepository.findOneBy({ id });
 
-    if(!question) throw new NotFoundException(`Question With id ${id} not found`)
-    
-    if(text){
-      question.text = text
+    if (!question)
+      throw new NotFoundException(`Question With id ${id} not found`);
+
+    if (text) {
+      question.text = text;
     }
 
-    if(quizId){
+    if (quizId) {
       const quiz = await this.quizService.findOne(quizId);
       question.quiz = quiz;
     }
 
     try {
-      await this.questionRepository.save(question)
+      await this.questionRepository.save(question);
       return question;
     } catch (error) {
-      this.commonService.handleDBErrors(error)
+      this.commonService.handleDBErrors(error);
     }
   }
 
   async remove(id: string) {
     const question = await this.findOne(id);
-    
+
     await this.questionRepository.remove(question);
 
     return `Deleted Successfully`;

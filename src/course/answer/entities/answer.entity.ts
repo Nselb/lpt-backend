@@ -4,7 +4,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('answers')
 export class Answer {
   @PrimaryGeneratedColumn('uuid')
-  id: number;
+  id: string;
   @Column('varchar', { length: 150 })
   text: string;
   @Column('bool')
