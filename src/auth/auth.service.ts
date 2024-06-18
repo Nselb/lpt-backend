@@ -4,15 +4,15 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { hashPassword, verifyPassword } from '../plugins/crypt';
-import { CreateStudentDto, StudentLoginDto } from './dto';
-import { Student } from './entities';
 import { JwtStudentPayload } from './dto/intrefaces/jwt-payload.interface';
 import { JwtService } from '@nestjs/jwt';
 import { CreateTeacherDto } from 'src/teachers/dto/create-teacher.dto';
 import { Teacher } from 'src/teachers/entities/teacher.entity';
 import { CommonService } from 'src/common/common.service';
 import { TeacherLoginDto } from './dto/login/teacher-login.dto';
-
+import { Student } from 'src/students/student/entities/student.entity';
+import { CreateStudentDto } from 'src/students/student/dto/create-student.dto';
+import { StudentLoginDto } from './dto';
 @Injectable()
 export class AuthService {
   constructor(

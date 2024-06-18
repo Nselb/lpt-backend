@@ -8,6 +8,8 @@ import { CourseModule } from './course/course/course.module';
 import { QuizModule } from './course/quiz/quiz.module';
 import { QuestionModule } from './course/question/question.module';
 import { AnswerModule } from './course/answer/answer.module';
+import { StudentModule } from './students/student/student.module';
+import { ProgressModule } from './students/progress/progress.module';
 
 @Module({
   imports: [
@@ -29,6 +31,8 @@ import { AnswerModule } from './course/answer/answer.module';
     QuizModule,
     QuestionModule,
     AnswerModule,
+    StudentModule,
+    ProgressModule,
   ],
   controllers: [],
   providers: [],

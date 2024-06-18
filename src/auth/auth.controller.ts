@@ -9,9 +9,10 @@ import {
 } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
-import { CreateStudentDto, StudentLoginDto } from './dto';
+import { StudentLoginDto } from './dto';
 import { CreateTeacherDto } from 'src/teachers/dto/create-teacher.dto';
 import { TeacherLoginDto } from './dto/login/teacher-login.dto';
+import { CreateStudentDto } from 'src/students/student/dto/create-student.dto';
 
 @Controller('auth')
 export class AuthController {

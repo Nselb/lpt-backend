@@ -2,13 +2,13 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Student } from './entities/student.entity';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { TeachersModule } from 'src/teachers/teachers.module';
 import { Teacher } from 'src/teachers/entities/teacher.entity';
 import { CommonModule } from 'src/common/common.module';
+import { Student } from 'src/students/student/entities/student.entity';
 
 @Module({
   imports: [

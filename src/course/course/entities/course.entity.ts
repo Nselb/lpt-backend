@@ -1,4 +1,5 @@
 import { Quiz } from "src/course/quiz/entities/quiz.entity";
+import { Student } from "src/students/student/entities/student.entity";
 import { Teacher } from "src/teachers/entities/teacher.entity";
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
@@ -23,5 +24,8 @@ export class Course {
 
     @OneToMany(() => Quiz, quiz => quiz.course, {onDelete: 'CASCADE'} )
     quizzes: Quiz[]
+
+    @OneToMany(() => Student, student => student.course, {onDelete:'CASCADE'})
+    students: Student[]
 
 }
