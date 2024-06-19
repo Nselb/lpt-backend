@@ -30,9 +30,9 @@ export class TeachersService {
   async findOne(term: string) {
 
     let teacher: Teacher;
-    teacher = await this.teacherRepository.findOneBy({ id: term });
+    teacher = await this.teacherRepository.findOne({where:{ id: term},relations: ['course'] });
     if(!teacher){
-      teacher = await this.teacherRepository.findOneBy({ username: term });
+      teacher = await this.teacherRepository.findOne({where: {username: term}, relations:['course'] });
     }
 
     if(!teacher) throw new NotFoundException(`Teacher with term ${term} not found`);
