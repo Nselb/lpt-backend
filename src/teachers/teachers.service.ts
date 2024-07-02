@@ -9,7 +9,6 @@ import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class TeachersService {
-
   constructor(
     @InjectRepository(Teacher)
     private readonly teacherRepository: Repository<Teacher>,
@@ -17,37 +16,42 @@ export class TeachersService {
   ) {}
 
   async findAll(paginationDto: PaginationDto) {
-
-    const { limit=10, offset =0 } = paginationDto;
+    const { limit = 10, offset = 0 } = paginationDto;
 
     let teachers = await this.teacherRepository.find({
       take: limit,
-      skip: offset
+      skip: offset,
     });
     return teachers;
   }
 
   async findOne(term: string) {
-
     let teacher: Teacher;
-    teacher = await this.teacherRepository.findOne({where:{ id: term},relations: ['course'] });
-    if(!teacher){
-      teacher = await this.teacherRepository.findOne({where: {username: term}, relations:['course'] });
+    teacher = await this.teacherRepository.findOne({
+      where: { id: term },
+      relations: ['courses'],
+    });
+    if (!teacher) {
+      teacher = await this.teacherRepository.findOne({
+        where: { username: term },
+        relations: ['courses'],
+      });
     }
 
-    if(!teacher) throw new NotFoundException(`Teacher with term ${term} not found`);
+    if (!teacher)
+      throw new NotFoundException(`Teacher with term ${term} not found`);
 
     return teacher;
   }
 
   async update(id: string, updateTeacherDto: UpdateTeacherDto) {
-
     const teacher = await this.teacherRepository.preload({
       id: id,
-      ...updateTeacherDto
-    })
+      ...updateTeacherDto,
+    });
 
-    if(!teacher) throw new NotFoundException(`Teacher with id ${id} not found`)
+    if (!teacher)
+      throw new NotFoundException(`Teacher with id ${id} not found`);
 
     try {
       await this.teacherRepository.save(teacher);
@@ -59,9 +63,8 @@ export class TeachersService {
   }
 
   async remove(id: string) {
-
     const teacher = await this.findOne(id);
-    
+
     await this.teacherRepository.remove(teacher);
 
     return `Deleted Successfully`;
