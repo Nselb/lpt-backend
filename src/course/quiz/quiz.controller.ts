@@ -16,6 +16,11 @@ export class QuizController {
     return this.quizService.findAll();
   }
 
+  @Get('byCourse/:term')
+  findByCourse(@Param('term') term: string) {
+    return this.quizService.findByCourse(term);
+  }
+
   @Get(':term')
   findOne(@Param('term') term: string) {
     return this.quizService.findOne(term);

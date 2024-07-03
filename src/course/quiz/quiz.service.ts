@@ -99,6 +99,18 @@ export class QuizService {
     });
   }
 
+  async findByCourse(term: string) {
+    const course = await this.courseService.findOne(term);
+    if (!course) {
+      throw new BadRequestException(`No se encontro curso con id ${term}`)
+    }
+    const quizes = await this.quizRepository.findBy({course})
+    if (!quizes) {
+      throw new BadRequestException('No hay quizes con ese curso')
+    }
+    return quizes
+  }
+
   async update(id: string, updateQuizDto: UpdateQuizDto) {
     const { name, courseId, quizTypeId, questions } = updateQuizDto;
     let quiz = await this.quizRepository.findOneBy({ id });
