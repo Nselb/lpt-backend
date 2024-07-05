@@ -1,10 +1,6 @@
 import { DataSource, Repository } from 'typeorm';
 
-import {
-  BadRequestException,
-  Injectable,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { hashPassword, verifyPassword } from '../plugins/crypt';
@@ -18,8 +14,6 @@ import { Student } from 'src/students/student/entities/student.entity';
 import { CreateStudentDto } from 'src/students/student/dto/create-student.dto';
 import { StudentLoginDto } from './dto';
 import { Progress } from 'src/students/progress/entities/progress.entity';
-import { Course } from 'src/course/course/entities/course.entity';
-import { CourseService } from 'src/course/course/course.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -29,7 +23,6 @@ export class AuthService {
     private readonly teacherRepository: Repository<Teacher>,
     @InjectRepository(Progress)
     private readonly progressRepository: Repository<Progress>,
-    private readonly courseService: CourseService,
     private readonly jwtService: JwtService,
     private readonly commonService: CommonService,
     private readonly dataSource: DataSource,
@@ -52,12 +45,6 @@ export class AuthService {
   }
   async registerStudent(studentDto: CreateStudentDto) {
     const { pin, ...studentData } = studentDto;
-    const course = await this.courseService.findOne(studentDto.courseId);
-    if (!course) {
-      throw new BadRequestException(
-        `Curso con id ${studentDto.courseId} no existe`,
-      );
-    }
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -73,16 +60,16 @@ export class AuthService {
         student: createdStudent,
       });
       await this.progressRepository.save(progress);
-      await queryRunner.commitTransaction();
+      await queryRunner.commitTransaction()
       return {
         ...createdStudent,
         token: this.getJwt({ id: createdStudent.id }),
       };
     } catch (error) {
-      await queryRunner.rollbackTransaction();
-      this.commonService.handleDBErrors(error);
-    } finally {
-      queryRunner.release();
+      await queryRunner.rollbackTransaction()
+      this.commonService.handleDBErrors(error)
+    }finally{
+      queryRunner.release()
     }
   }
 
