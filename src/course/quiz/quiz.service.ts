@@ -61,8 +61,9 @@ export class QuizService {
       for (const question of questions) {
         
           const newQuestion = this.questionRepository.create({
-            text: question,
+            text: question.text,
             quiz,
+            answers: question.answers
           });
           await queryRunner.manager.save(newQuestion);
         
@@ -148,8 +149,9 @@ export class QuizService {
         for (const question of questions) {
 
           const newQuestion = this.questionRepository.create({
-            text: question,
+            text: question.text,
             quiz,
+            answers: question.answers
           });
           await queryRunner.manager.save(newQuestion);
           
