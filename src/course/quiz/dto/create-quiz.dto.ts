@@ -1,5 +1,6 @@
 import { Type } from "class-transformer";
 import { IsArray, IsString, IsUUID, MinLength, ValidateNested } from "class-validator";
+import { Question } from "src/course/question/entities/question.entity";
 
 export class CreateQuizDto {
 
@@ -16,6 +17,6 @@ export class CreateQuizDto {
     quizTypeId: string;
 
     @IsArray()
-    @Type(() => String)
-    questions: string[]
+    @Type(() => Question)
+    questions: Question[]
 }

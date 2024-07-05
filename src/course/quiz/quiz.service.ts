@@ -51,6 +51,7 @@ export class QuizService {
 
       let quiz = this.quizRepository.create({
         name: name,
+        questions: createQuizDto.questions
       });
       quiz.course = course;
       quiz.quizType = quizType;
