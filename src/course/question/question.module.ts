@@ -10,6 +10,6 @@ import { CommonModule } from 'src/common/common.module';
   imports: [TypeOrmModule.forFeature([Question]), QuizModule, CommonModule],
   controllers: [QuestionController],
   providers: [QuestionService],
-  exports: [QuestionService]
+  exports: [QuestionService],
 })
 export class QuestionModule {}

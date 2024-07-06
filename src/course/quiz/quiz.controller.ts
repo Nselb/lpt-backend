@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { QuizService } from './quiz.service';
 import { CreateQuizDto, UpdateQuizDto } from './dto';
 
@@ -8,6 +16,7 @@ export class QuizController {
 
   @Post()
   create(@Body() createQuizDto: CreateQuizDto) {
+    console.log('aja');
     return this.quizService.create(createQuizDto);
   }
 
