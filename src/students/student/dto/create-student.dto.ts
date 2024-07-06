@@ -23,6 +23,9 @@ export class CreateStudentDto {
   @Min(1)
   @Max(9999)
   pin: string;
+  @IsString()
+  @IsUUID()
+  courseId: string;
 }
 export class CreateGradeDto {
   @IsString()
