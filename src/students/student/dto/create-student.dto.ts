@@ -1,4 +1,13 @@
-import { IsInt, IsOptional, IsString, IsUUID, Max, Min, MinLength } from 'class-validator';
+import {
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Max,
+  Min,
+  MinLength,
+} from 'class-validator';
 
 export class CreateStudentDto {
   @IsString()
@@ -14,6 +23,16 @@ export class CreateStudentDto {
   @Min(1)
   @Max(9999)
   pin: string;
- 
 }
-
+export class CreateGradeDto {
+  @IsString()
+  @IsUUID()
+  studentId: string;
+  @IsString()
+  @IsUUID()
+  quizId: string;
+  @IsNumber()
+  @Min(0)
+  @Max(10)
+  grade: number;
+}

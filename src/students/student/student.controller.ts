@@ -1,6 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { StudentService } from './student.service';
-import { CreateStudentDto } from './dto/create-student.dto';
+import { CreateGradeDto, CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { PaginationDto } from '../../common/dtos/pagination.dto';
 
@@ -8,9 +17,8 @@ import { PaginationDto } from '../../common/dtos/pagination.dto';
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
-
   @Get()
-  findAll(@Query() paginationDto:PaginationDto) {
+  findAll(@Query() paginationDto: PaginationDto) {
     return this.studentService.findAll(paginationDto);
   }
 
@@ -27,5 +35,18 @@ export class StudentController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentService.remove(id);
+  }
+
+  @Post('grade')
+  gradeQuiz(@Body() createGradeDto: CreateGradeDto) {
+    return this.studentService.gradeQuiz(createGradeDto);
+  }
+
+  @Get('/grade/:studentId/:quizId')
+  getStudentGradeByQuiz(
+    @Param('studentId') studentId: string,
+    @Param('quizId') quizId: string,
+  ) {
+    return this.studentService.getStudentGradesByQuiz(studentId, quizId);
   }
 }
