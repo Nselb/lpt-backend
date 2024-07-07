@@ -93,7 +93,7 @@ export class QuizService {
     if (!quiz) throw new NotFoundException(`Quiz with term ${term} not found`);
     return this.quizRepository.findOne({
       where: { id: quiz.id },
-      relations: ['questions', 'course'],
+      relations: ['questions', 'course', 'questions.answers'],
     });
   }
 
