@@ -4,14 +4,17 @@ import {
   Column,
   Entity,
   ManyToOne,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Student } from './student.entity';
 
 @Entity('studentGrade')
 export class StudentGrade {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+  @PrimaryColumn()
+  studentId: string;
+  @PrimaryColumn()
+  quizId: string;
   @Column('float')
   grade: number;
   @Column('varchar')
@@ -25,5 +28,7 @@ export class StudentGrade {
   @BeforeInsert()
   setDate() {
     this.date = new Date().toISOString();
+    this.studentId = this.student.id;
+    this.quizId = this.quiz.id;
   }
 }

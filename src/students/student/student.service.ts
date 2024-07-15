@@ -106,12 +106,29 @@ export class StudentService {
     if (!student) {
       throw new BadRequestException('Estudiante no existe');
     }
-    const createdGrade = this.studentGradeRepository.create({
-      ...createGradeDto,
-      quiz,
-      student,
+    const studentGrade = await this.studentGradeRepository.findOne({
+      where: { quizId: quiz.id, studentId: student.id },
     });
-    return await this.studentGradeRepository.save(createdGrade);
+    console.log(studentGrade);
+
+    if (!studentGrade) {
+      console.log('aca creando');
+
+      const createdGrade = this.studentGradeRepository.create({
+        ...createGradeDto,
+        quiz,
+        student,
+      });
+      return await this.studentGradeRepository.save(createdGrade);
+    } else {
+      console.log('aca updating');
+      const updatedGrade = await this.studentGradeRepository.preload({
+        quizId: quiz.id,
+        studentId: student.id,
+        grade: createGradeDto.grade,
+      });
+      return await this.studentGradeRepository.save(updatedGrade);
+    }
   }
 
   async getStudentGradesByQuiz(studentId: string, quizId: string) {
