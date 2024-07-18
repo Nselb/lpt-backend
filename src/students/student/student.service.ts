@@ -34,7 +34,7 @@ export class StudentService {
     let students = await this.studentRepository.find({
       take: limit,
       skip: offset,
-      relations: ['course'],
+      relations: ['course', 'studentGrades', 'progress'],
     });
     return students;
   }
@@ -43,12 +43,12 @@ export class StudentService {
     let student: Student;
     student = await this.studentRepository.findOne({
       where: { id: term },
-      relations: ['course', 'studentGrades'],
+      relations: ['course', 'studentGrades', 'progress'],
     });
     if (!student) {
       student = await this.studentRepository.findOne({
         where: { username: term },
-        relations: ['course', 'studentGrades'],
+        relations: ['course', 'studentGrades', 'progress'],
       });
     }
     if (!student)
