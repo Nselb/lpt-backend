@@ -131,6 +131,18 @@ export class StudentService {
     }
   }
 
+  async byCourse(courseId: string) {
+    const course = await this.courseService.findOne(courseId);
+    if (!course) {
+      throw new BadRequestException('No existe el curso');
+    }
+    const students = await this.studentRepository.find({
+      where: { course },
+      relations: { progress: true, studentGrades: { quiz: true } },
+    });
+    return students;
+  }
+
   async getStudentGradesByQuiz(studentId: string, quizId: string) {
     const quiz = await this.quizService.findOne(quizId);
     if (!quiz) {
