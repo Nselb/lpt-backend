@@ -138,7 +138,11 @@ export class StudentService {
     }
     const students = await this.studentRepository.find({
       where: { course },
-      relations: { progress: true, studentGrades: { quiz: true } },
+      relations: {
+        progress: true,
+        studentGrades: { quiz: true },
+        course: true,
+      },
     });
     return students;
   }
